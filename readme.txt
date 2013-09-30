@@ -3,7 +3,7 @@ Contributors: MinKwon Park
 Donate link: http://ani2life.com/
 Tags: importer, ttxml, textcube, tistory
 Requires at least: 3.0
-Tested up to: 3.3
+Tested up to: 3.6.1
 Stable tag: 2.4
 
 TTXML(티스토리/텍스트큐브 백업파일)의 내용을 워드프레스로 가져오는 Importer.
