@@ -4,7 +4,7 @@ Plugin Name: TTXML Importer
 Plugin URI: http://ani2life.com
 Description: Will process a TTXML for importing posts into WordPress. TTXML(티스토리/텍스트큐브 백업파일)의 내용을 워드프레스로 가져오는 Importer.
 Author: A2
-Version: 2.4
+Version: 2.5
 Author URI: http://ani2life.com
 License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
@@ -12,7 +12,7 @@ License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 /*
 TTXML Importer.
 Will process a TTXML for importing posts into WordPress.
-Copyright (C) 2009-2011 박민권, ani2life@gmail.com
+Copyright (C) 2009-2013 박민권, ani2life@gmail.com
 
 이 프로그램은 자유 소프트웨어입니다. 소프트웨어의 피양도자는 자유 소프트웨어 재단이 공표한 GNU 일반 공중 사용 허가서 2판 또는 그 이후 판을 임의로 선택해서, 그 규정에 따라 프로그램을 개작하거나 재배포할 수 있습니다.
 
@@ -186,24 +186,29 @@ class TTXML_Import {
     }
 
     function import_attachments($post_id, &$attachments) {
+        $thumbnail_once = false;
+
         foreach ( $attachments as $data ) {
             // image only
             if ( strpos($data['post_mime_type'], 'image/') !== 0 )
                 continue;
 
-            $data['post_author'] = 1;
-            $data['post_content'] = '';
-            $data['post_status'] = 'inherit';
-            $data['post_type'] = 'attachment';
-            $data['post_parent'] = $post_id;
             $data['guid'] = $this->attach_url.'/'.$data['post_name'];
-
-            $attach_id = wp_insert_post($data);
-            if ( !$attach_id ) return false;
+            $data['post_status'] = 'inherit';
+            $data['post_content'] = '';
 
             $file_path = $this->attach_dir.'/'.$data['post_name'];
+
+            $attach_id = wp_insert_attachment($data, $file_path, $post_id);
+            if ( !$attach_id ) return false;
+
             $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
             wp_update_attachment_metadata($attach_id, $attach_data);
+
+            if ( !$thumbnail_once ) {
+                update_post_meta($post_id, '_thumbnail_id', $attach_id);
+                $thumbnail_once = true;
+            }
         }
 
         return true;

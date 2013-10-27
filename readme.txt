@@ -3,8 +3,8 @@ Contributors: MinKwon Park
 Donate link: http://ani2life.com/
 Tags: importer, ttxml, textcube, tistory
 Requires at least: 3.0
-Tested up to: 3.6.1
-Stable tag: 2.4
+Tested up to: 3.7
+Stable tag: 2.5
 
 TTXML(티스토리/텍스트큐브 백업파일)의 내용을 워드프레스로 가져오는 Importer.
 
@@ -35,12 +35,16 @@ TTXML(티스토리/텍스트큐브 백업파일)의 내용을 워드프레스로
 
 == Changelog ==
 
+= 2.5 =
+* 미디어 라이브러리 및 대표이미지 선택시 섬네일 관련 문제 해결
+* 첫번째 첨부 이미지를 대표이미지로 선택
+
 = 2.4 =
 * 워드프레스 플러그인 방식으로 제공
 
 == Upgrade Notice ==
 
-버전 2.4 부터 워드프레스 플러그인 방식으로 제공 됩니다.
+버전 2.5 부터 섬네일 문제가 해결되었습니다.
 
 == Arbitrary section ==
 
