@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: TTXML Importer
+Plugin Name: TTXML Importer (modified by Minku Lee)
 Plugin URI: http://ani2life.com
 Description: Will process a TTXML for importing posts into WordPress. TTXML(티스토리/텍스트큐브 백업파일)의 내용을 워드프레스로 가져오는 Importer.
 Author: A2
@@ -241,8 +241,12 @@ class TTXML_Import {
             $comment_content = htmlspecialchars_decode(trim($comment_content[1]));
             $comment_content = $wpdb->escape($comment_content);
 
-            $comment_approved = 1;
-            $user_id = 0;
+            // Map secret comment to unapproved comment
+            preg_match('|<secret>([^<]+)</secret>|s', $comment, $comment_secret);
+            $comment_approved = ($comment_secret[1] == 1 ? 0 : 1);
+
+            preg_match('|commenter\s+id="([^"]?)"|s', $comment, $comment_author_id);
+            $user_id = $comment_author_id[1] == 1 ? 1 : 0;
 
             $replys = &$this->parse_comments($comment);
 
@@ -354,9 +358,15 @@ class TTXML_Import {
             $tags_input = '';
         }
 
+        preg_match('|<id>([^<]+)</id>|s', $data, $tc_post_id);
+        $meta_input = array(
+            'tc_post_id' => $tc_post_id[1]
+        );
+
         $post = compact(
             'post_type', 'post_author', 'post_date', 'post_date_gmt', 'post_content',
-            'post_title', 'post_name', 'post_status', 'post_password', 'category', 'tags_input'
+            'post_title', 'post_name', 'post_status', 'post_password', 'category', 'tags_input',
+            'meta_input'
         );
 
         return $post;
